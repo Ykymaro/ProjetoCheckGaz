@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <base target="_self">
+    <meta charset="UTF-8">
+    <!-- Corrigi o initial-scale para 1.0 (importante para celular) -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="LOGO.png">
+    <title>Projeto Arduino | Soluções Modernas</title>
+    <meta name="description" content="Site oficial do nosso projeto Arduino com design moderno e elegante">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #00255f;
+            --primary-dark: #282a5c;
+            --secondary: #11114e;
+            --accent: #f59e0b;
+            --dark: #1e293b;
+            --darker: #0f172a;
+            --light: #f8fafc;
+            --gray-light: #e2e8f0;
+            --gray: #64748b;
+            --success: #10b981;
+            --border-radius: 12px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: 'Inter', Arial, Helvetica, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--gray-light);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        /* Navigation Tabs (desktop) */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            background: var(--light);
+            border-radius: var(--border-radius);
+            padding: 0.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        .tab {
+            padding: 0.6rem 1rem;
+            background: transparent;
+            border: none;
+            color: var(--gray);
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            white-space: nowrap;
+        }
+
+        .tab.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: var(--shadow);
+        }
+
+        .tab:hover:not(.active) {
+            background: var(--gray-light);
+            color: var(--dark);
+        }
+
+        /* Hamburger (mobile) */
+        .hamburger {
+            display: none;
+            background: transparent;
+            border: none;
+            font-size: 1.4rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 8px;
+        }
+
+        /* Mobile nav drawer */
+        .mobile-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.4);
+            z-index: 1500;
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
+        .mobile-backdrop.show {
+            display: block;
+            opacity: 1;
+        }
+
+        .mobile-nav {
+            position: fixed;
+            top: 0;
+            right: 0;
+            height: 100%;
+            width: 80%;
+            max-width: 320px;
+            background: linear-gradient(180deg, white 0%, #f7fafc 100%);
+            box-shadow: -8px 0 24px rgba(0,0,0,0.12);
+            z-index: 1600;
+            transform: translateX(100%);
+            transition: transform 0.28s ease;
+            padding: 2rem 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .mobile-nav.show {
+            transform: translateX(0);
+        }
+
+        .mobile-nav .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.9rem 1rem;
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 600;
+            background: transparent;
+            transition: background 0.18s ease;
+        }
+        .mobile-nav .nav-link:hover {
+            background: var(--gray-light);
+        }
+
+        .mobile-nav .close-btn {
+            margin-left: auto;
+            background: transparent;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        /* Main Content */
+        main {
+            padding: 2.5rem 0;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.45s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Card Styles */
+        .card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--gray-light);
+        }
+
+        .card-highlight {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+        }
+
+        /* Typography */
+        h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--darker);
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .card-highlight h1 {
+            color: white;
+        }
+
+        h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--darker);
+            margin-bottom: 1rem;
+        }
+
+        .card-highlight h2 {
+            color: white;
+        }
+
+        h3 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.8rem;
+        }
+
+        p {
+            font-size: 1.05rem;
+            line-height: 1.7;
+            margin-bottom: 1.1rem;
+            color: var(--gray);
+        }
+
+        .card-highlight p {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Video Section */
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: var(--border-radius);
+            margin: 2rem 0;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: var(--border-radius);
+        }
+
+        /* Download Section */
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            background: var(--success);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: var(--border-radius);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+        }
+
+        .download-btn:hover {
+            background: #0da271;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Image Gallery */
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .gallery-item {
+            background: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .gallery-content {
+            padding: 1.5rem;
+        }
+
+        /* Code Block */
+        .code-block {
+            background: var(--darker);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin: 2rem 0;
+            overflow-x: auto;
+        }
+
+        .code-block pre {
+            color: var(--light);
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Team Grid */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .team-member {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .team-member:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .team-member img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 1rem;
+            border: 4px solid var(--primary);
+        }
+
+        /* Lists */
+        ul {
+            list-style: none;
+            margin-left: 0;
+        }
+
+        li {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 0.8rem;
+            color: var(--gray);
+        }
+
+        li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--success);
+            font-weight: bold;
+        }
+
+        .card-highlight li::before {
+            color: var(--accent);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--darker);
+            color: var(--light);
+            padding: 3rem 0;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-section h3 {
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .footer-section p {
+            color: var(--gray-light);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .container { padding: 0 18px; }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: row;
+                gap: 1rem;
+            }
+
+            /* hide desktop tabs on small screens */
+            .tabs {
+                display: none;
+            }
+
+            .hamburger {
+                display: inline-flex;
+            }
+
+            h1 {
+                font-size: 1.9rem;
+            }
+
+            .card {
+                padding: 1.25rem;
+            }
+
+            .team-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .image-gallery {
+                grid-template-columns: 1fr;
+            }
+
+            .logo-img {
+                height: 44px;
+            }
+        }
+
+        /* Utility Classes */
+        .text-center {
+            text-align: center;
+        }
+
+        .mb-4 {
+            margin-bottom: 2rem;
+        }
+
+        .mt-4 {
+            margin-top: 2rem;
+        }
+
+        .badge {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+        .logo-img {
+            height: 55px; /* ou o tamanho que quiser */
+            margin-right: 5px;
+            margin-bottom: -10px;
+        }
+
+        /* Prevent scroll when mobile nav open */
+        body.no-scroll {
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="#" class="logo" aria-label="CheckGaz - Home">
+                    <img src="LOGO.png" alt="Logo CheckGaz" class="logo-img">
+                    CheckGaz
+                </a>
+
+                <!-- Desktop tabs -->
+                <nav>
+                    <div class="tabs" role="tablist" aria-label="Navegação principal">
+                        <button class="tab active" onclick="switchTab(0)" role="tab" aria-selected="true">
+                            <i class="fas fa-exclamation-circle"></i> Importância
+                        </button>
+                        <button class="tab" onclick="switchTab(1)" role="tab">
+                            <i class="fas fa-download"></i> Download
+                        </button>
+                        <button class="tab" onclick="switchTab(2)" role="tab">
+                            <i class="fas fa-microchip"></i> Arduino
+                        </button>
+                        <button class="tab" onclick="switchTab(3)" role="tab">
+                            <i class="fas fa-info-circle"></i> Sobre
+                        </button>
+                    </div>
+                </nav>
+
+                <!-- Hamburger for mobile -->
+                <button class="hamburger" id="hamburgerBtn" aria-label="Abrir menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile nav backdrop -->
+    <div id="mobileBackdrop" class="mobile-backdrop" tabindex="-1" aria-hidden="true"></div>
+
+    <!-- Mobile nav drawer -->
+    <aside id="mobileNav" class="mobile-nav" aria-hidden="true">
+        <div style="display:flex; align-items:center; gap:0.5rem;">
+            <strong style="font-size:1.05rem; color:var(--primary)">Menu</strong>
+            <button class="close-btn" id="mobileCloseBtn" aria-label="Fechar menu"><i class="fas fa-times"></i></button>
+        </div>
+
+        <a href="#" class="nav-link" data-tab="0"><i class="fas fa-exclamation-circle"></i> Importância</a>
+        <a href="#" class="nav-link" data-tab="1"><i class="fas fa-download"></i> Download</a>
+        <a href="#" class="nav-link" data-tab="2"><i class="fas fa-microchip"></i> Arduino</a>
+        <a href="#" class="nav-link" data-tab="3"><i class="fas fa-info-circle"></i> Sobre</a>
+    </aside>
+
+    <main class="container">
+        <!-- Tab 1: Importância do Projeto -->
+        <div class="tab-content active" id="tab1">
+            <div class="card">
+                <h1>Projeto CheckGaz: detectou, agiu, protegeu.</h1>
+                <p>Nosso projeto une a versatilidade do Arduino à segurança essencial contra vazamentos de gás, prevenendo riscos e protegendo vidas com tecnologia e inovação.</p>
+
+                <div class="video-container">
+                    <!-- iframe corrigido (sem duplicação) -->
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/OAEQwAqsaYo?si=j6lwtkYQal-0ZvHW" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+
+                <h2>Por que nosso projeto é importante?</h2>
+                <ul>
+                    <li>Monitoramento 24 Horas</li>
+                    <li>Segurança em casa e no ambiente de trabalho</li>
+                    <li>Prevenção de riscos instantaneamente</li>
+                    <li>Ajuda em tempo real</li>
+                    <li>funcional e intuitivo ao mesmo tempo</li>
+                </ul>
+            </div>
+
+            <div class="card card-highlight">
+                <h2>Impacto Global</h2>
+                <p>Cerca de mais de 1.500 incidentes por ano no mundo envolvendo gás natural, deixando diversas pessoas mortas e ou feridas por todo o mundo.</p>
+            </div>
+        </div>
+
+        <!-- Tab 2: Download do Aplicativo -->
+        <div class="tab-content" id="tab2">
+            <div class="card">
+                <h1>Baixe Nosso Aplicativo</h1>
+                <p>Controle seu projeto Arduino de qualquer lugar com nosso aplicativo moderno e intuitivo em um servidor privado.</p>
+
+                <div class="card card-highlight text-center">
+                    <h2>Checkgaz Service</h2>
+                    <p>Versão 2.1.0 | Disponível para Android e iOS</p>
+                    <a href="#" class="download-btn" id="downloadBtn">
+                        📱 Download Gratuito
+                    </a>
+                </div>
+
+                <div class="image-gallery">
+                    <div class="gallery-item">
+                        <img src="https://picsum.photos/400/300?random=10" alt="Interface do aplicativo - Tela principal">
+                        <div class="gallery-content">
+                            <h3>Interface Intuitiva</h3>
+                            <p>Controle todos os dispositivos de forma simples e organizada</p>
+                        </div>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="https://picsum.photos/400/300?random=11" alt="Interface do aplicativo - Gráficos">
+                        <div class="gallery-content">
+                            <h3>Análise em Tempo Real</h3>
+                            <p>Monitoramento com gráficos e estatísticas detalhadas</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h2>Recursos Principais</h2>
+                <ul>
+                    <li>Controle remoto via Wi-Fi e Bluetooth</li>
+                    <li>Programação visual por blocos</li>
+                    <li>Monitoramento em tempo real</li>
+                    <li>Histórico de dados e relatórios</li>
+                    <li>Suporte a múltiplos dispositivos</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Tab 3: Explicação sobre Arduino -->
+        <div class="tab-content" id="tab3">
+            <div class="card">
+                <h1>Nosso Hardware Arduino</h1>
+                <p>Desenvolvemos uma solução personalizada baseada no Arduino Uno, com componentes adicionais para maior funcionalidade e desempenho.</p>
+
+                <div class="image-gallery">
+                    <div class="gallery-item">
+                        <img src="_u_n_uno_r3_2.jpg" alt="Nosso Arduino personalizado - Visão frontal">
+                        <div class="gallery-content">
+                            <h3>Placa Principal</h3>
+                            <p>Arduino Uno R3 com shield personalizado</p>
+                        </div>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="cabo usb.png" alt="Nosso Arduino personalizado - Visão frontal">
+                        <div class="gallery-content">
+                            <h3>Conectividade</h3>
+                            <p>
+                                Speaker(caixinha de som),
+                                Cabo USB,
+                                Smartphone
+                            </p>
+                        </div>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="mq22.jpg" alt="Componentes adicionais">
+                        <div class="gallery-content">
+                            <h3>Sensores</h3>
+                            <p>Modulo Sensor De Gas Mq-2</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h2>Código Principal</h2>
+                <div class="code-block">
+                    <pre>// Projeto Arduino - Controle Principal
+#define entradaDigital 0
+#define entradaAnalogica 0
+
+bool dSensor;
+int aSensor;
+int buzzerPin = 7;
+void setup() {
+  Serial.begin(9600);
+
+  pinMode (entradaDigital, INPUT);
+
+}
+
+void loop() {
+  dSensor = digitalRead(entradaDigital);
+aSensor = analogRead(entradaAnalogica);
+
+Serial.print("{\"dSensor\":");
+Serial.print(dSensor);
+
+Serial.print(",\"aSensor\":");
+Serial.print(aSensor);
+Serial.println("}");
+
+delay(1000);
+
+if(aSensor >= 250){
+
+
+ tone(7, aSensor);
+}
+else{
+   noTone(buzzerPin);
+}
+}
+}</pre>
+                </div>
+
+                <h2>Especificações Técnicas</h2>
+                <ul>
+                    <li>Processador: ATmega328P</li>
+                    <li>Memória: 32KB Flash, 2KB SRAM</li>
+                    <li>Conectividade: Smartphone + USB Tipo B</li>
+                    <li>Portas: 14 digitais, 6 analógicas</li>
+                    <li>Alimentação: 5V DC ou USB</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Tab 4: Sobre Nós -->
+        <div class="tab-content" id="tab4">
+            <div class="card">
+                <h1 class="text-center">Conheça Nossa Equipe</h1>
+                <p class="text-center">Somos um grupo de entusiastas da tecnologia dedicados a criar soluções inovadoras com Arduino.</p>
+
+                <div class="team-grid">
+                    <div class="team-member">
+                        <img src="https://picsum.photos/200/200?random=30" alt="João Silva - Líder do Projeto">
+                        <h3>Felipe Agrela</h3>
+                        <p>Engenheiro</p>
+                        <p>Engenheiro Eletrônico especializado em Arduino</p>
+                    </div>
+                    <div class="team-member">
+                        <img src="Nicolas.jpeg" alt="Componentes adicionais">
+                        <h3>Nicolas Augusto</h3>
+                        <p>Desenvolvedor</p>
+                        <p>Especialista em programação HTML e Inteligência Artificial</p>
+                    </div>
+                    <div class="team-member">
+                        <img src="https://picsum.photos/200/200?random=32" alt="Pedro Costa - Designer">
+                        <h3>Marcelo Villar</h3>
+                        <p>Designer</p>
+                        <p>Cria interfaces intuitivas e experiências do usuário excepcionais</p>
+                    </div>
+                    <div class="team-member">
+                        <img src="https://picsum.photos/200/200?random=33" alt="Ana Oliveira - Marketing">
+                        <h3>Sophia Batista</h3>
+                        <p>Marketing</p>
+                        <p>Responsável pela divulgação e crescimento da comunidade</p>
+                    </div>
+                </div>
+
+                <div class="card card-highlight mt-4">
+                    <h2>Nossa Missão</h2>
+                    <p>Garantir a segurança de nossos clientes de forma tecnologica e eficaz mesmo longe de casa.</p>
+                </div>
+
+                <div class="card mt-4">
+                    <h2>Contato</h2>
+                    <p><strong>Email:</strong> Checkgaz@gmail.com</p>
+                    <p><strong>Telefone:</strong> (13) 99999-9999</p>
+                    <p><strong>Endereço:</strong> Praia Grande, SP - Brasil</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>CheckGaz</h3>
+                    <p>Segurança e tecnologia na palma da sua mão.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Links Rápidos</h3>
+                    <p>Documentação</p>
+                    <p>Tutoriais</p>
+                    <p>Comunidade</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Suporte</h3>
+                    <p>FAQ</p>
+                    <p>Fórum</p>
+                    <p>Contato</p>
+                </div>
+            </div>
+            <div class="text-center mt-4">
+                <p>&copy; 2025 CheckGaz. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggles
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const mobileNav = document.getElementById('mobileNav');
+        const mobileBackdrop = document.getElementById('mobileBackdrop');
+        const mobileCloseBtn = document.getElementById('mobileCloseBtn');
+
+        function openMobileNav() {
+            mobileNav.classList.add('show');
+            mobileBackdrop.classList.add('show');
+            mobileNav.setAttribute('aria-hidden', 'false');
+            mobileBackdrop.setAttribute('aria-hidden', 'false');
+            document.body.classList.add('no-scroll');
+        }
+        function closeMobileNav() {
+            mobileNav.classList.remove('show');
+            mobileBackdrop.classList.remove('show');
+            mobileNav.setAttribute('aria-hidden', 'true');
+            mobileBackdrop.setAttribute('aria-hidden', 'true');
+            document.body.classList.remove('no-scroll');
+        }
+
+        hamburgerBtn.addEventListener('click', openMobileNav);
+        mobileCloseBtn.addEventListener('click', closeMobileNav);
+        mobileBackdrop.addEventListener('click', closeMobileNav);
+
+        // Wire mobile nav links to switchTab + close
+        document.querySelectorAll('.mobile-nav .nav-link').forEach(a => {
+            a.addEventListener('click', function(e) {
+                e.preventDefault();
+                const tabIndex = Number(this.dataset.tab);
+                switchTab(tabIndex);
+                closeMobileNav();
+                // Scroll to top of content on mobile
+                window.scrollTo({ top: document.querySelector('main').offsetTop - 10, behavior: 'smooth' });
+            });
+        });
+
+        // Tab switching functionality (desktop & programmatic)
+        function switchTab(tabIndex) {
+            // Hide all tab contents
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => content.classList.remove('active'));
+
+            // Remove active class from all tabs
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            // Show selected tab content (safety check)
+            const target = document.getElementById(`tab${tabIndex + 1}`);
+            if (target) target.classList.add('active');
+
+            // Add active class to clicked tab (desktop)
+            if (tabs[tabIndex]) tabs[tabIndex].classList.add('active');
+
+            // For accessibility update aria-selected
+            tabs.forEach((t, i) => t.setAttribute('aria-selected', i === tabIndex ? 'true' : 'false'));
+        }
+
+        // Download app function (gera um download do arquivo 'guilherme.txt' se existir no servidor)
+        function downloadApp(event) {
+            if (event) event.preventDefault();
+            // caminho do arquivo no servidor (ajuste se necessário)
+            const filePath = 'guilherme.txt';
+            // verifica se o browser aceita a criação de link
+            const link = document.createElement('a');
+            link.href = filePath;
+            link.download = filePath.split('/').pop();
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            // fallback: notificação ao usuário
+            setTimeout(() => {
+                // Se o arquivo não existir no servidor o navegador mostrará erro. Mantive alerta leve:
+                console.log('Tentativa de download iniciada para:', filePath);
+            }, 200);
+        }
+
+        // Attach to the actual download button in the page
+        document.getElementById('downloadBtn').addEventListener('click', downloadApp);
+
+        // Initialize first tab as active
+        document.addEventListener('DOMContentLoaded', function() {
+            switchTab(0);
+        });
+    </script>
+</body>
+</html>
